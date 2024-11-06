@@ -1,0 +1,77 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int    @id @default(autoincrement())
+  todayScore Float?
+  score      Float?
+
+  activities   UserActivity[]
+  sessions     UserAverageSession[]
+  performances UserPerformance[]
+  userInfos    UserInfos            @relation(fields: [userInfosId], references: [id])
+  userInfosId  Int                  @unique
+  keyData      keyData              @relation(fields: [keyDataId], references: [id])
+  keyDataId    Int                  @unique
+}
+
+model UserInfos {
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  password  String
+  firstName String?
+  lastName  String?
+  age       Int?
+  user      User?
+}
+
+model keyData {
+  id                Int   @id @default(autoincrement())
+  calorieCount      Int
+  proteinCount      Int
+  carbohydrateCount Int
+  lipidCount        Int
+  user              User?
+}
+
+model UserActivity {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  day      DateTime
+  kilogram Int
+  calories Int
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model UserAverageSession {
+  id            Int @id @default(autoincrement())
+  userId        Int
+  day           Int
+  sessionLength Int
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model UserPerformance {
+  id     Int @id @default(autoincrement())
+  userId Int
+  kindId Int
+  value  Int
+
+  user User            @relation(fields: [userId], references: [id])
+  kind PerformanceKind @relation(fields: [kindId], references: [id])
+}
+
+model PerformanceKind {
+  id   Int    @id @default(autoincrement())
+  kind String
+
+  performances UserPerformance[]
+}

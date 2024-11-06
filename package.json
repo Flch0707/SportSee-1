@@ -1,5 +1,5 @@
 {
-  "name": "P9-front-end-dashboard",
+  "name": "sport-see-backend",
   "version": "1.0.0",
   "description": "Backend for the 9th project of the new path Front-end Developper",
   "main": "index/app.js",
@@ -10,14 +10,23 @@
     "nodemon": "^2.0.4"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.59.16",
+    "@prisma/client": "^5.21.1",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "express-validator": "^7.2.0",
-    "idx": "^2.5.6"
+    "idx": "^2.5.6",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^5.21.1",
+    "sqlite3": "^5.1.7",
+    "studio": "^0.13.5"
   },
   "scripts": {
     "dev": "node_modules/.bin/nodemon app/index.js",
     "start": "node app/index.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }
