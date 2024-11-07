@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const { verifyToken } = require("./utils/jwt");
 const { check } = require("express-validator");
+const prisma = require("./db");
 
 const handleNoUserData = (res, userData) => {
   if (!userData) {
@@ -49,7 +50,28 @@ const authenticate = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    res.status(403).json({ error: "Invalid or expired token" });
+    return res.status(403).json({ error: "Invalid or expired token" });
+  }
+};
+
+const userExist = async (req, res, next) => {
+  const username = req.body.username.toString().toLowerCase();
+  try {
+    const userNameExist = await prisma.user.findFirst({
+      where: {
+        username: username.toString().toLowerCase(),
+      },
+    });
+    if (userNameExist) {
+      return res.status(422).json({
+        code: "001",
+        status: "error",
+        message: "username already exist",
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(500).json({ error: "error while checking the user" });
   }
 };
 
@@ -58,4 +80,5 @@ module.exports = {
   handleNoUserData,
   validateRequest,
   validatePassword,
+  userExist,
 };

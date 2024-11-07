@@ -19,6 +19,7 @@ const {
   handleNoUserData,
   validateRequest,
   validatePassword,
+  userExist,
 } = require("./middleware");
 
 const delay = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
@@ -105,7 +106,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/signup", [validatePassword], async (req, res) => {
+router.post("/signup", [userExist, validatePassword], async (req, res) => {
   try {
     const user = await createUser(
       req.body.username.toLowerCase().trim(),
@@ -113,7 +114,7 @@ router.post("/signup", [validatePassword], async (req, res) => {
     );
     if (user) {
       const token = generateToken(user.id);
-      res.json({ token, userId: user.id });
+      return res.json({ token, userId: user.id });
     }
     res.status(401).json({ error: "Invalid credentials" });
   } catch (error) {

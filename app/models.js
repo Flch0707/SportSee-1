@@ -8,12 +8,7 @@ const bcrypt = require("bcryptjs");
  * @returns
  */
 const getUsers = async () => {
-  const users = await prisma.user.findMany({
-    include: {
-      userInfos: true,
-    },
-  });
-
+  const users = await prisma.user.findMany();
   return users;
 };
 
@@ -26,12 +21,9 @@ const getUsers = async () => {
 const getUserByCredential = async (username, password) => {
   const user = await prisma.user.findFirst({
     where: {
-      userInfos: {
-        username: username.toString().toLowerCase(),
-      },
+      username: username.toString().toLowerCase(),
     },
     include: {
-      userInfos: true,
       keyData: true,
     },
   });
@@ -50,7 +42,6 @@ const getUserById = async (userId) => {
   const user = await prisma.user.findUnique({
     where: { id: parseInt(userId) },
     include: {
-      userInfos: true,
       keyData: true,
     },
   });
@@ -100,9 +91,8 @@ const createUser = async (username, password) => {
   const hash = bcrypt.hashSync(password, 8);
   const user = await prisma.user.create({
     data: {
-      userInfos: {
-        create: { username: username, password: hash },
-      },
+      username: username,
+      password: hash,
       keyData: {
         create: {
           calorieCount: 0,
@@ -124,9 +114,8 @@ const createUser = async (username, password) => {
 
 // const updateUser = async () => {
 //   const hash = bcrypt.hashSync("password", 8);
-
-//   await prisma.userInfos.update({
-//     where: { id: 2 },
+//   await prisma.user.update({
+//     where: { id: 4 },
 //     data: { password: hash },
 //   });
 // };

@@ -8,36 +8,28 @@ generator client {
 }
 
 model User {
-  id         Int    @id @default(autoincrement())
-  todayScore Float?
-  score      Float?
-
+  id           Int                  @id @default(autoincrement())
+  todayScore   Float?
+  score        Float?
+  username     String               @unique
+  password     String
+  firstName    String?
+  lastName     String?
+  age          Int?
   activities   UserActivity[]
   sessions     UserAverageSession[]
   performances UserPerformance[]
-  userInfos    UserInfos            @relation(fields: [userInfosId], references: [id])
-  userInfosId  Int                  @unique
-  keyData      keyData              @relation(fields: [keyDataId], references: [id])
-  keyDataId    Int                  @unique
-}
-
-model UserInfos {
-  id        Int     @id @default(autoincrement())
-  username  String  @unique
-  password  String
-  firstName String?
-  lastName  String?
-  age       Int?
-  user      User?
+  keyData      keyData[]
 }
 
 model keyData {
-  id                Int   @id @default(autoincrement())
+  id                Int  @id @default(autoincrement())
+  userId            Int
   calorieCount      Int
   proteinCount      Int
   carbohydrateCount Int
   lipidCount        Int
-  user              User?
+  User              User @relation(fields: [userId], references: [id])
 }
 
 model UserActivity {
